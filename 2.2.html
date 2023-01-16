@@ -1,0 +1,549 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2.2</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><p><a href="https://drive.google.com/file/d/1W7nO7o6HdBlX7_W8NHI7whcoSU3bO4MU/view">os-problems-20220906.pdf - Google Drive</a></p>
+<h3 id="se-01">75. 2016-SE-01</h3>
+<pre><code>#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;err.h&gt;
+#include &lt;stdint.h&gt;
+int main(const int argc, char* argv[])
+{
+    if (argc != 2){
+        err(1, "argc");
+    }
+    int a[2];
+    if (pipe(a) == -1){
+        err(2, "pipe");
+    }
+    pid_t p1 = fork();
+    if (p1 == -1){
+        err(3, "fork");
+    }
+    if (p1 == 0){
+        close(a[0]);
+        if (dup2(a[1], 1) == -1){
+            err(4, "dup2");
+        }
+        if (execlp("cat", "cat", argv[1], (char*)NULL) == -1){
+            err(5, "execlp");
+        }
+    }
+    close(a[1]);
+    if (dup2(a[0], 0) == -1){
+        err(6, "dup2");
+    }
+    if (execlp("sort", "sort", (char*)NULL) == -1){
+        err(7, "execlp");
+    }
+    exit(0);
+}
+</code></pre>
+<p>// дава permission denied</p>
+<h3 id="se-02">76. 2016-SE-02</h3>
+<pre><code>#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;err.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdbool.h&gt;
+int main(const int argc, char* argv[])
+{
+    if (argc != 1){
+        err(1, "argc");
+    }
+    char* arg = NULL;
+    size_t len = 0;
+    do {
+        printf("prompt: ");
+        if (getline(&amp;arg, &amp;len, stdin) == -1){
+            err(2, "getline");
+        }
+	if (strcmp(arg, "exit\n") == 0){
+		break;
+	}
+        if (execl("/bin/", arg, (char*)NULL) == -1){
+            err(3, "execl");
+        }
+    }
+    while(true);
+    exit(0);
+}
+</code></pre>
+<h3 id="in-01">77. 2017-IN-01</h3>
+<pre><code>#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;err.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdbool.h&gt;
+int main(const int argc, char* argv[])
+{
+    if (argc != 1){
+        err(17, "argc");
+    }
+    int a[2];
+    if (pipe(a) == -1){
+        err(1, "pipe");
+    }
+    pid_t p1 = fork();
+    if (p1 == -1){
+        err(2, "fork");
+    }
+    if (p1 == 0){
+        close(a[0]);
+        if (dup2(a[1], 1) == -1){
+            err(3, "dup2");
+        }
+        if (execlp("cut", "cut", "-d:", "-f7", "/etc/passwd", (char*)NULL) == -1){
+            err(4, "execlp");
+        }
+    }
+    close(a[1]);
+    int b[2];
+    if (pipe(b) == -1){
+        err(5, "pipe");
+    }
+    pid_t p2 = fork();
+    if (p2 == -1){
+        err(6, "fork");
+    }
+    if (p2 == 0){
+        close(b[0]);
+        if (dup2(a[0], 0) == -1){
+            err(7, "dup2");
+        }
+        if (dup2(b[1], 1) == -1){
+            err(8, "dup2");
+        }
+        if (execlp("sort", "sort", (char*)NULL) == -1){
+            err(9, "execlp");
+        }
+    }
+    close(b[1]);
+    	
+    int c[2];
+    if (pipe(c) == -1){
+        err(10, "pipe");
+    }
+    pid_t p3 = fork();
+    if (p3 == -1){
+        err(11, "fork");
+    }
+    if (p3 == 0){
+        close(c[0]);
+        if (dup2(b[0], 0) == -1){
+            err(12, "dup2");
+        }
+        if (dup2(c[1], 1) == -1){
+            err(13, "dup2");
+        }
+        if (execlp("uniq", "uniq", "-c", (char*)NULL) == -1){
+            err(14, "execlp");
+        }
+    }
+    close(b[0]);
+    close(c[1]);
+    if (dup2(c[0], 0) == -1){
+        err(15, "dup2");
+    }
+    if (execlp("sort", "sort", (char*)NULL) == -1){
+        err(16, "execlp");
+    }
+    exit(0);
+}
+</code></pre>
+<p>// трябва друг начин различен от getline</p>
+<h3 id="in-02">78. 2017-IN-02</h3>
+<pre><code>#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;err.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/wait.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdbool.h&gt;
+int main(const int argc, char* argv[])
+{
+    if (argc &gt; 2){
+        err(1, "argc");
+    }
+    char command[5] = "echo";
+    if (argc == 2){
+        if (strlen(argv[1]) &gt; 4){
+            errx(2, "length");
+        }
+        strcpy(command, argv[1]);
+    }
+    char* str = NULL;
+    size_t len = 0;
+    while(getline(&amp;str, &amp;len, stdin) &gt; 0){
+        int size = strlen(str) - 1;
+        char arg1[5], arg2[5];
+        int ind1 = 0, ind2 = 0, spaces = 0;
+        for (int i=0; i&lt;size; i++){
+            if (str[i] != 0x20 &amp;&amp; str[i] != 0x0A){
+                if (spaces == 0 &amp;&amp; ind1 &lt; 4){
+                    arg1[ind1++] = str[i];
+                    if (i == size - 1){
+                        pid_t p1 = fork();
+                        if (p1 == 0){
+                            if (execlp(command, command, arg1, (char*)NULL) == -1){
+                                err(3, "execl");
+                            }
+                        }
+                        wait(&amp;p1);
+                    }
+                }
+                else if (spaces == 1 &amp;&amp; ind2 &lt; 4){
+                    arg2[ind2++] = str[i];
+                }
+                else
+                    errx(4, "input");
+            }
+            if (spaces == 0 &amp;&amp; (str[i] == 0x20 || str[i] == 0x0A)){
+                spaces++;
+                continue;
+            }
+            else if (spaces == 1 &amp;&amp; ((str[i] == 0x20 || str[i] == 0x0A) || i == size-1)) {
+                spaces = 0;
+                pid_t p1 = fork();
+                if (p1 == 0){
+                    if (execlp(command, command, arg1, (char*)NULL) == -1){
+                        err(3, "execl");
+                    }
+                }
+                wait(&amp;p1);
+                p1 = fork();
+                if (p1 == 0){
+                    if (execlp(command, command, arg2, (char*)NULL) == -1){
+                        err(4, "execlp");
+                    }
+                }
+                wait(&amp;p1);
+                ind1 = ind2 = 0;
+            }
+        }
+    }
+    free(str);
+    exit(0);
+}
+</code></pre>
+<h3 id="se-01-1">79. 2018-SE-01</h3>
+<pre><code>#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;err.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdbool.h&gt;
+int main(const int argc, char* argv[])
+{
+    if (argc != 2){
+        err(1, "argc");
+    }
+    int a[2];
+    if (pipe(a) == -1){
+        err(2, "pipe");
+    }
+    pid_t p1 = fork();
+    if (p1 == -1){
+        err(3, "fork");
+    }
+    if (p1 == 0){
+        close(a[0]);
+        if (dup2(a[1], 1) == -1){
+            err(4, "dup2");
+        }
+        if (execlp("find", "find", argv[1], "-type", "f", "-printf", "%T@:%f\n", (char*)NULL) == -1){
+            err(5, "execl");
+        }
+    }
+    close(a[1]);
+    int b[2];
+    if (pipe(b) == -1){
+        err(6, "pipe");
+    }
+    pid_t p2 = fork();
+    if (p2 == -1){
+        err(7, "fork");
+    }
+    if (p2 == 0){
+        close(b[0]);
+        if (dup2(a[0], 0) == -1){
+            err(8, "dup2");
+        }
+        if (dup2(b[1], 1) == -1){
+            err(9, "dup2");
+        }
+        if (execlp("sort", "sort", "-n", "-k1,1", (char*)NULL) == -1){
+            err(10, "execl");
+        }
+    }
+    close(b[1]);
+    close(a[0]);
+    int c[2];
+    if (pipe(c) == -1){
+        err(11, "pipe");
+    }
+    pid_t p3 = fork();
+    if (p3 == -1){
+        err(12, "fork");
+    }
+    if (p3 == 0){
+        close(c[0]);
+        if (dup2(b[0], 0) == -1){
+            err(13, "dup2");
+        }
+        if (dup2(c[1], 1) == -1){
+            err(14, "dup2");
+        }
+        if (execlp("tail", "tail", "-n1", (char*)NULL) == -1){
+            err(15, "execlp");
+        }
+    }
+    close(c[1]);
+    close(b[0]);
+    if (dup2(c[0], 0) == -1){
+        err(16, "dup2");
+    }
+    if (execlp("cut", "cut", "-d:", "-f2", (char*)NULL) == -1){
+        err(17, "execlp");
+    }
+    exit(0);
+}
+</code></pre>
+<h3 id="se-01-2">80. 2019-SE-01</h3>
+<h3 id="se-01-3">81. 2020-SE-01</h3>
+<h3 id="se-02-1">82. 2020-SE-02</h3>
+<pre><code>#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;err.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdbool.h&gt;
+int main(const int argc, char* argv[])
+{
+    if (argc != 3){
+        errx(1, "argc");
+    }
+    int output;
+    if ((output = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) == -1){
+        err(2, "open");
+    }
+    int a[2];
+    if (pipe(a) == -1){
+        err(3, "pipe");
+    }
+    pid_t p = fork();
+    if (p == -1){
+        err(4, "fork");
+    }
+    if (p == 0){
+        close(a[0]);
+        if (dup2(a[1], 1) == -1){
+            err(5, "dup2");
+        }
+        if (execlp("cat", "cat", argv[1], (char*)NULL) == -1){
+            err(6, "execlp");
+        }
+    }
+    close(a[1]);
+    uint8_t c;
+    int sz;
+    while((sz = read(a[0], &amp;c, 1)) == 1){
+        if (c == 0x7D){
+            if (read(a[0], &amp;c, 1) != 1){
+                err(7, "read");
+            }
+            c = c ^ 0x20;
+            if (write(output, &amp;c, 1) != 1){
+                err(8, "write");
+            }
+        }
+    }
+    if (sz == -1){
+        err(9, "read");
+    }
+    close(output);
+    exit(0);
+}
+</code></pre>
+<h3 id="se-03">83. 2020-SE-03</h3>
+<pre><code>#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;err.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdbool.h&gt;
+struct triple{
+    char name[8];
+    uint32_t offset;
+    uint32_t length;
+};
+int main(const int argc, char* argv[])
+{
+    if (argc != 2){
+        errx(1, "argc");
+    }
+    int fd;
+    if ((fd = open(argv[1], O_RDONLY)) == -1){
+        err(2, "open");
+    }
+    struct stat s;
+    if (fstat(fd, &amp;s) == -1){
+        err(3, "fstat");
+    }
+    int size = s.st_size / 16;
+    struct triple arr[8];
+    for (int i=0; i&lt;size; i++){
+        if (read(fd, &amp;arr[i], sizeof(arr[i])) != sizeof(arr[i])){
+            err(4, "read");
+        }
+    }
+    int a[2];
+    if (pipe(a) == -1){
+        err(5, "pipe");
+    }
+    pid_t p = -1;
+    int i;
+    for (i=0; i&lt;size; i++){
+        p = fork();
+        if (p == -1){
+            err(6, "fork");
+        }
+        if (p == 0)
+            break;
+    }
+    uint16_t num;
+    if (p == 0){
+        close(a[0]);
+        int currFd;
+        if ((currFd = open(arr[i].name, O_RDONLY)) == -1){
+            err(7, "open");
+        }
+        if (lseek(currFd, arr[i].offset, SEEK_SET) == -1){
+            err(8, "lseek");
+        }
+        for(uint32_t j=0; j&lt;arr[i].length; j++){
+            if (read(currFd, &amp;num, sizeof(num)) != sizeof(num)){
+                err(9, "read");
+            }
+            if (write(a[1], &amp;num, sizeof(num)) != sizeof(num)){
+                err(10, "write");
+            }
+        }
+    }
+    else{
+        close(a[1]);
+        uint16_t res = 0;
+        int sz;
+        while((sz = read(a[0], &amp;num, sizeof(num))) == sizeof(num)){
+            res = res ^ num;
+        }
+        if (sz == -1){
+            err(11, "read");
+        }
+        printf("result: %d\n", res);
+        close(fd);
+    }
+    exit(0);
+}
+</code></pre>
+<h3 id="se-01-4">84. 2021-SE-01</h3>
+<h3 id="in-01-1">85. 2022-IN-01</h3>
+<pre><code>#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;err.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;string.h&gt;
+int main(const int argc, char* argv[])
+{
+    if (argc != 3){
+        errx(1, "argc");
+    }
+    int N = atoi(argv[1]);
+    int D = atoi(argv[2]);
+    const char* ding = "DING";
+    const char* dong = "DONG";
+    int cw[2];
+    int pw[2];
+    pipe(cw);
+    pipe(pw);
+    pid_t a = fork();
+    if (a == -1){
+        err(2, "fork");
+    }
+    if (a == 0){
+        close(cw[1]);
+        close(pw[0]);
+    }
+    else{
+        close(cw[0]);
+        close(pw[1]);
+    }
+    int dongLen = strlen(dong);
+    int dingLen = strlen(ding);
+    char c;
+    for (int i=0; i&lt;N; i++){
+        if (a == 0){
+            if(read(cw[0], &amp;c, 1) != 1){
+                err(3, "read");
+            }
+            if(write(1, dong, dongLen) != dongLen){
+                err(4, "write");
+            }
+            printf("\n");
+            if(write(pw[1], &amp;c, 1) != 1){
+                err(5, "write");
+            }
+        }
+        else {
+            if(write(1, ding, dingLen) != dingLen){
+                err(6, "write");
+            }
+            if(write(cw[1], &amp;c, 1) != 1){
+                err(7, "write");
+            }
+            if(read(pw[0], &amp;c, 1) != 1){
+                err(8, "read");
+            }
+            sleep(D);
+        }
+    }
+    exit(0);
+}
+</code></pre>
+</div>
+</body>
+
+</html>
