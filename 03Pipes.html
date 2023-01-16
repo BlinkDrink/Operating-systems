@@ -1,0 +1,932 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>os-pipes</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h3 id="a-0200">1. 03-a-0200</h3>
+<ul>
+<li>
+<p>Сортирайте /etc/passwd лексикографски по поле UserID.</p>
+<pre><code>  cat /etc/passwd | sort -t ":" -k 3,3
+</code></pre>
+</li>
+</ul>
+<h3 id="a-0201">2. 03-a-0201</h3>
+<ul>
+<li>
+<p>Сортирайте /etc/passwd числово по поле UserID.<br>
+(Открийте разликите с лексикографската сортировка)</p>
+<pre><code>  cat /etc/passwd | sort -t ":" -n -k 3,3
+</code></pre>
+</li>
+</ul>
+<h3 id="a-0210">3. 03-a-0210</h3>
+<ul>
+<li>
+<p>Изведете само 1-ва и 5-та колона на файла /etc/passwd спрямо разделител “:”.</p>
+<pre><code>  cat /etc/passwd | awk -F ":" '{print $1, $5}'
+</code></pre>
+</li>
+</ul>
+<h3 id="a-0211">4. 03-a-0211</h3>
+<ul>
+<li>
+<p>Изведете съдържанието на файла /etc/passwd от 2-ри до 6-ти символ.</p>
+<pre><code>  cat /etc/passwd | head -n 1 | cut -c 2-6
+</code></pre>
+</li>
+</ul>
+<h3 id="a-0212">5. 03-a-0212</h3>
+<ul>
+<li>
+<p>Отпечатайте потребителските имена и техните home директории от /etc/passwd.</p>
+<pre><code>  cat /etc/passwd | awk -F ":" '{print $5, $6}'
+</code></pre>
+</li>
+</ul>
+<h3 id="a-0213">6. 03-a-0213</h3>
+<ul>
+<li>
+<p>Отпечатайте втората колона на /etc/passwd, разделена спрямо символ ‘/’.</p>
+<pre><code>  cat /etc/passwd | awk -F "/" '{print $2}'
+</code></pre>
+</li>
+</ul>
+<h3 id="a-1500">7. 03-a-1500</h3>
+<ul>
+<li>
+<p>Изведете броя на байтовете в</p>
+<pre><code>  /etc/passwd. cat /etc/passwd | wc -c
+</code></pre>
+</li>
+<li>
+<p>Изведете броя на символите в</p>
+<pre><code>  /etc/passwd. cat /etc/passwd | wc -m
+</code></pre>
+</li>
+<li>
+<p>Изведете броя на редовете  в</p>
+<pre><code>  /etc/passwd. cat /etc/passwd | wc -lcat
+</code></pre>
+</li>
+</ul>
+<h3 id="a-2000---useful-link-httpswww.baeldung.comlinuxdisplay-first-n-characters-of-filetextusing-the-head-commandalready-installed-on-our-machine.textmind-that-newlines2c-tabs2c-andare-also-counted-as-bytes.">8. 03-a-2000 - useful link <a href="https://www.baeldung.com/linux/display-first-n-characters-of-file#:~:text=Using%20the%20head%20Command,already%20installed%20on%20our%20machine.&amp;text=Mind%20that%20newlines%2C%20tabs%2C%20and,are%20also%20counted%20as%20bytes">https://www.baeldung.com/linux/display-first-n-characters-of-file#:~:text=Using the head Command,already installed on our machine.&amp;text=Mind that newlines%2C tabs%2C and,are also counted as bytes</a>.</h3>
+<p>С отделни команди, извадете от файл /etc/passwd:</p>
+<ul>
+<li>
+<p>първите 12 реда</p>
+<pre><code>  head /etc/passwd -n 12
+</code></pre>
+</li>
+<li>
+<p>първите 26 символа</p>
+<pre><code>  /etc/passwd | cut -z -c -26
+</code></pre>
+</li>
+<li>
+<p>всички редове, освен последните 4</p>
+<pre><code>   head /etc/passwd -n -4
+</code></pre>
+</li>
+<li>
+<p>последните 17 реда</p>
+<pre><code>  tail /etc/passwd -n 17
+</code></pre>
+</li>
+<li>
+<p>151-я ред (или друг произволен, ако нямате достатъчно редове)</p>
+<pre><code>  head /etc/passwd -n 151 | tail -n 1
+</code></pre>
+</li>
+<li>
+<p>последните 4 символа от 13-ти ред (символът за нов ред не е част от реда)</p>
+<pre><code>  one way =&gt; head /etc/passwd -n 13 | tail -n 1 | rev | cut -c -4 | rev
+  other way =&gt; head /etc/passwd -n 13 | tail -n 1 | sed -e 's/.*\(.\{4\}\)$/\1/'
+</code></pre>
+</li>
+</ul>
+<h3 id="a-3000">9. 03-a-3000</h3>
+<p>Запаметете във файл в своята home директория резултатът от командата <code>df -P</code>.<br>
+Напишете команда, която извежда на екрана съдържанието на този файл, без първия ред (хедъра), сортирано по второ поле (numeric).</p>
+<pre><code>df -P &gt; dfout
+tail -n +1 dfout | sort -n -k 2,2
+</code></pre>
+<h3 id="a-3100">10. 03-a-3100</h3>
+<ul>
+<li>
+<p>Запазете само потребителските имена от /etc/passwd във файл users във вашата home директория.</p>
+<pre><code>  cat /etc/passwd | awk -F ":" '{print $5}' &gt; ~/users
+</code></pre>
+</li>
+</ul>
+<h3 id="a-3500">11. 03-a-3500</h3>
+<ul>
+<li>
+<p>Изпишете всички usernames от /etc/passwd с главни букви.</p>
+<pre><code>  cat users | tr 'абвгдежзийклмнопрстуфхцчшщъюя' 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЮЯ'
+</code></pre>
+</li>
+</ul>
+<h3 id="a-5000">12. 03-a-5000</h3>
+<p>Изведете реда от /etc/passwd, на който има информация за вашия потребител. cat /etc/passwd | egrep ‘s12345’</p>
+<ul>
+<li>
+<p>Изведедете този ред и двата реда преди него.</p>
+<pre><code>  cat /etc/passwd | egrep 's45811' -B2
+</code></pre>
+</li>
+<li>
+<p>Изведете този ред, двата преди него, и трите след него.</p>
+<pre><code>  cat /etc/passwd | egrep 's45811' -B2 -A3
+</code></pre>
+</li>
+<li>
+<p>Изведете <em>само</em> реда, който се намира 2 реда преди реда, съдържащ информация за вашия потребител.</p>
+<pre><code>  cat /etc/passwd | egrep 's45811' -B2 | head -n 1
+</code></pre>
+</li>
+</ul>
+<h3 id="a-5001">13. 03-a-5001</h3>
+<ul>
+<li>
+<p>Изведете колко потребители не изпозват /bin/bash за login shell според /etc/passwd<br>
+(hint: ‘man 5 passwd’ за информация какъв е форматът на /etc/passwd)</p>
+<pre><code>  cat /etc/passwd | egrep -v '/bin/bash' | wc -l
+</code></pre>
+</li>
+</ul>
+<h3 id="a-5002">14. 03-a-5002</h3>
+<ul>
+<li>
+<p>Изведете само имената на хората с второ име по-дълго от 6 (&gt;6) символа според /etc/passwd</p>
+<pre><code>  cat /etc/passwd | awk -F ":" '{print $5}' | sed -e 's/\(.*\)\,\{3,4\}.*$/\1/' | sed -e 's/\(.*\),.*$/\1/' | cut -d " " -f 2 | awk 'length($1) &gt; 6'
+</code></pre>
+</li>
+</ul>
+<h3 id="a-5003">15. 03-a-5003</h3>
+<ul>
+<li>
+<p>Изведете имената на хората с второ име по-късо от 8 (&lt;=7) символа според /etc/passwd // !(&gt;7) = ?</p>
+<pre><code>  cat /etc/passwd | awk -F ":" '{print $5}' | sed -e 's/\(.*\)\,\{3,4\}.*$/\1/' | sed -e 's/\(.*\),.*$/\1/' | cut -d " " -f 2 | awk 'length($1) &lt;= 7'
+  cat /etc/passwd | cut -d ":" -f 5 | egrep -o '[а-Яa-zA-Z]+ [а-Яa-zA-Z]{,7}'
+</code></pre>
+</li>
+</ul>
+<h3 id="a-5004">16. 03-a-5004</h3>
+<ul>
+<li>
+<p>Изведете целите редове от /etc/passwd за хората от 03-a-5003</p>
+<pre><code>  cat /etc/passwd | sed -e 's/:\([^,0-9]*\) \([^,]*\),\{3,4\}\([^a-zA-Z0-9]*\):/:\2:/' | awk -F ":" 'length($5) &lt;= 7'   # works on all names
+</code></pre>
+<p>egrep -w ‘[а-Я]+ [а-Я]{,7}’ /etc/passwd             #works only on cyrilic names<br>
+cat /etc/passwd | awk -F “:” ‘$5 ~ /[а-Я]+ [а-Я]{,7}/ {print $0}’</p>
+</li>
+</ul>
+<h3 id="a-6000">17. 03-a-6000</h3>
+<p>Копирайте &lt;РЕПО&gt;/exercises/data/emp.data във вашата home директория.<br>
+Посредством awk, използвайки копирания файл за входнни данни, изведете:</p>
+<ul>
+<li>
+<p>общия брой редове</p>
+<pre><code>  cp /srv/fmi-os/exercises/data/emp.data ~/myData
+  awk 'END {print NR}' myData  or awk '{rows= rows + 1 } END {print rows}' myData
+</code></pre>
+</li>
+<li>
+<p>третия ред</p>
+<pre><code>  awk 'NR == 3 {thirdRow = $0} END {print thirdRow}' myData or  awk 'NR == 3 {print $0}' myData
+</code></pre>
+</li>
+<li>
+<p>последното поле от всеки ред</p>
+<pre><code>  awk '{print $NF}' myData
+</code></pre>
+</li>
+<li>
+<p>последното поле на последния ред</p>
+<pre><code>  awk 'END {print $NF}' myData
+</code></pre>
+</li>
+<li>
+<p>всеки ред, който има повече от 4 полета</p>
+<pre><code>  awk 'NF &gt; 4 {print $0}' myData
+</code></pre>
+</li>
+<li>
+<p>всеки ред, чието последно поле е по-голямо от 4</p>
+<pre><code>  awk '$NF &gt; 4' myData
+</code></pre>
+</li>
+<li>
+<p>общия брой полета във всички редове</p>
+<pre><code>  awk '{AF = AF + NF} END {print AF}' myData
+</code></pre>
+</li>
+<li>
+<p>броя редове, в които се среща низът Beth</p>
+<pre><code>  awk '/.*Beth.*/ {occ = occ + 1} END {print occ}' myData
+</code></pre>
+</li>
+<li>
+<p>най-голямото трето поле и редът, който го съдържа</p>
+<pre><code>   awk '$3 &gt; max {max = $3; owner = $0} END {print max, owner}' myData
+</code></pre>
+</li>
+<li>
+<p>всеки ред, който има поне едно поле</p>
+<pre><code>  awk 'NF &gt;= 1' myData
+</code></pre>
+</li>
+<li>
+<p>всеки ред, който има повече от 17 знака</p>
+<pre><code>  awk '/^.{18,}$/' myData
+</code></pre>
+</li>
+<li>
+<p>броя на полетата във всеки ред и самият ред</p>
+<pre><code>  awk '{print NF,$0}' myData
+</code></pre>
+</li>
+<li>
+<p>първите две полета от всеки ред, с разменени места</p>
+<pre><code>  awk '{print $2,$1}' myData
+</code></pre>
+</li>
+<li>
+<p>всеки ред така, че първите две полета да са с разменени места</p>
+<pre><code>  awk '{first=$1;second=$2;$1="";$2=""; print second, first, $0}' myData 
+</code></pre>
+</li>
+<li>
+<p>всеки ред така, че на мястото на първото поле да има номер на реда</p>
+<pre><code>  awk '{$1 = NR; print $0}' myData
+</code></pre>
+</li>
+<li>
+<p>всеки ред без второто поле</p>
+<pre><code>  awk '{$2=""; print $0}' myData 
+</code></pre>
+</li>
+<li>
+<p>за всеки ред, сумата от второ и трето поле</p>
+<pre><code>  awk '{sum= $2 + $3; print sum}' myData
+</code></pre>
+</li>
+<li>
+<p>сумата на второ и трето поле от всеки ред</p>
+<pre><code>  awk '{sum=sum+ $2 + $3; print sum}' myData
+  cp /srv/exercises/data/emp.data ~/myData
+</code></pre>
+</li>
+</ul>
+<h3 id="b-0300">18. 03-b-0300</h3>
+<ul>
+<li>
+<p>Намерете само Group ID-то си от файлa /etc/passwd.</p>
+<pre><code>  egrep 's12345' /etc/passwd | cut -d ":" -f 4  (one way)
+</code></pre>
+<p>awk -F “:” ‘$1 == “s12345” {print $4}’ /etc/passwd (another way)</p>
+</li>
+</ul>
+<h3 id="b-3400">19. 03-b-3400</h3>
+<ul>
+<li>
+<p>Колко коментара има във файла /etc/services ? Коментарите се маркират със символа #, след който всеки символ на реда се счита за коментар.</p>
+<pre><code>  egrep -o '#.+' /etc/services | cut -d '#' -f 2 | wc -m
+  cat /etc/services | grep -o '#.*' | grep -o '[^#]*$' | wc -m
+</code></pre>
+</li>
+</ul>
+<h3 id="b-3500">20. 03-b-3500</h3>
+<ul>
+<li>
+<p>Колко файлове в /bin са ‘shell script’-oве? (Колко файлове в дадена директория са ASCII text?)</p>
+<pre><code>  find /bin -maxdepth 1 -type f ! -name "*.*" -exec grep -lvIP '[^[:ascii:]]' {} + | wc -l
+</code></pre>
+</li>
+</ul>
+<h3 id="b-3600">21. 03-b-3600</h3>
+<ul>
+<li>
+<p>Направете списък с директориите на вашата файлова система, до които нямате достъп. Понеже файловата система може да е много голяма, търсете до 3 нива на дълбочина.</p>
+<pre><code>  find / -maxdepth 3 -type d 2&gt; /dev/null ! -readable &gt; noPermissions
+</code></pre>
+</li>
+</ul>
+<h3 id="b-4000">22. 03-b-4000</h3>
+<ul>
+<li>
+<p>Създайте следната файлова йерархия в home директорията ви:</p>
+<p>dir5/file1<br>
+dir5/file2<br>
+dir5/file3</p>
+</li>
+</ul>
+<p>Посредством vi въведете следното съдържание:</p>
+<ul>
+<li>
+<p>file1:<br>
+1<br>
+2<br>
+3</p>
+</li>
+<li>
+<p>file2:<br>
+s<br>
+a<br>
+d<br>
+f</p>
+</li>
+<li>
+<p>file3:<br>
+3<br>
+2<br>
+1<br>
+45<br>
+42<br>
+14<br>
+1<br>
+52</p>
+</li>
+</ul>
+<p>Изведете на екрана:</p>
+<ul>
+<li>
+<p>статистика за броя редове, думи и символи за всеки един файл</p>
+</li>
+<li>
+<p>статистика за броя редове и символи за всички файлове</p>
+</li>
+<li>
+<p>общия брой редове на трите файла</p>
+<pre><code>  mkdir dir5
+  cd dir5
+  touch file1 file2 file3	
+  wc file1 file2 file3
+</code></pre>
+</li>
+</ul>
+<p><mark>Vim Commands</mark></p>
+<ul>
+<li>
+<p>d - delete<br>
+motions</p>
+<ul>
+<li>w - delete current word up till the begining of the next word</li>
+<li>e - delete only from begining of current word to end of current word</li>
+<li>$ - delete from cursor to the end of line</li>
+</ul>
+</li>
+<li>
+<p>[number]motion</p>
+<ul>
+<li>5w - moves cursor to begining of 6th word</li>
+<li>5e - moves cursor to end of 5th word</li>
+<li>5$ - moves cursor to the end of 5th line (counting from cursor)</li>
+</ul>
+</li>
+<li>
+<p>d[number]motion</p>
+<ul>
+<li>d5w delets first 5 words from cursor</li>
+</ul>
+</li>
+<li>
+<p>dd -deletes whole line</p>
+<ul>
+<li>2dd delets 2 consecutive lines</li>
+</ul>
+</li>
+<li>
+<p>u  - undo last command</p>
+</li>
+<li>
+<p>U  - return line to its original state</p>
+</li>
+<li>
+<p>Ctrl-R - redo</p>
+</li>
+<li>
+<p>p - puts previously deleted text after the cursor</p>
+</li>
+<li>
+<p>r{char} - repaces the char over the cursor with {char}</p>
+<ul>
+<li>hellk -&gt; cursor at k press ro -&gt; hello</li>
+</ul>
+</li>
+<li>
+<p>ce[word] - deletes the characters from cursor till end of word and replaces them with [word]</p>
+<ul>
+<li>line tfree -&gt; cursor on f press ce[hree] -&gt; line three</li>
+<li>c[number]motion
+<ul>
+<li>c1$[word] - deletes from cursor to end of line and replaces with word</li>
+<li>c5w[word] - deletes from cursor 5 words ahead and replaces them with word</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>CTRL-g - shows current line, col and percentage of file</p>
+<ul>
+<li>gg - begining of file</li>
+<li>G  - end of file</li>
+<li>[number]G - go on line [number] of file</li>
+</ul>
+</li>
+<li>
+<p>/[pattern] - searches for [pattern] in file and with n you can navigate to next occurence or N for previous occurence.</p>
+<ul>
+<li>CTRL-o returns the cursor to the previous selection where we began</li>
+</ul>
+</li>
+<li>
+<p>% - this cmd takes a bracket and goes to the respective closing/opening bracket of the marked one. Example: hey there ( i am hiden and also [ I am hiden! ] ). If cursor is on first ( and press % it will send the cursor at its closing counterpart.</p>
+</li>
+<li>
+<p>:s/old/new/g - substitutes every occurence of old with new on the selected line</p>
+<ul>
+<li>2,5s/old/new/g - substitute old with new from line 2 to line 5</li>
+<li>%s/old/new/g - substitute in whole file</li>
+<li>%s/old/new/gc - prompt on each find whether to substitute or not</li>
+</ul>
+</li>
+<li>
+<p>:![linux cmd] - can execute command from vim.</p>
+<ul>
+<li>:w [name]- writes current vim editing under [name] to your current working directory.</li>
+<li>:!rm [name] - to delete it</li>
+</ul>
+</li>
+<li>
+<p>v - pressing v goes into marking mode. Moving around the cursor while in v - mode you can highlight text and do things with it. For example we can highlight text and use :w [name] to save only this text. Or click d to delete it</p>
+</li>
+<li>
+<p>:r [FILENAME] - on the place where the cursor is, paste the contents of [FILENAME]</p>
+<ul>
+<li>:r !ls - this pastes the output from the ls command</li>
+</ul>
+</li>
+<li>
+<p>o/O - o puts us in insert mode under the line of the cursor. O does the same but above the line.</p>
+</li>
+<li>
+<p>a - goes into insert mode AFTER the cursor</p>
+</li>
+<li>
+<p>R - on the cursor, begin replacing characters</p>
+</li>
+<li>
+<p>y - yank(copy) the highlighted text. Paste it with p.</p>
+<ul>
+<li>yy - copy whole line</li>
+<li>yw - copy word</li>
+</ul>
+</li>
+<li>
+<p>:set ic - ignores case when searching with /[pattern]</p>
+<ul>
+<li>:set hlsearch/hls - highlights searches</li>
+<li>:set noic/nohlsearch removes the highlight or case insensitiveness</li>
+</ul>
+</li>
+<li>
+<p>F1 - open help menu.</p>
+<ul>
+<li>:help [some command] - shows the help window with information about given command</li>
+<li>CTRL-w CTRL-w - moves between the different opened windows (either side by side or stacked)</li>
+<li>:set nocp - enter no compatible mode
+<ul>
+<li>CTRL-D during normal mode with commands (example :e{press ctrl-d} will show a list of commands that start with e. With tab we can iterate over different ones.<br>
+<mark>End Vim Commands</mark></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="b-4001-vim-tutorial">23. 03-b-4001 VIM TUTORIAL</h3>
+<ul>
+<li>Във file2 (inplace) подменете всички малки букви с главни.<br>
+either use vi to change them or cat file2 | tr ‘a-z’ ‘A-Z’</li>
+</ul>
+<h3 id="b-4003">25. 03-b-4003</h3>
+<ul>
+<li>
+<p>Изведете статистика за най-често срещаните символи в трите файла.</p>
+<pre><code>  cat file1 file2 file3 | sed -e 's/\(.\)/\1\n/g' | sort | uniq -c
+</code></pre>
+</li>
+</ul>
+<h3 id="b-4004">26. 03-b-4004</h3>
+<ul>
+<li>
+<p>Направете нов файл с име по ваш избор, чието съдържание е конкатенирани<br>
+съдържанията на file{1,2,3}.</p>
+<pre><code>   cat file{1,2,3} &gt; cat123.txt
+</code></pre>
+</li>
+</ul>
+<h3 id="b-4005">27. 03-b-4005</h3>
+<ul>
+<li>
+<p>Прочетете текстов файл file1 и направете всички главни букви малки като<br>
+запишете резултата във file2.</p>
+<pre><code>  cat file1 | tr 'a-z' 'A-Z' &gt; file2
+</code></pre>
+</li>
+</ul>
+<h3 id="b-5200">28. 03-b-5200</h3>
+<ul>
+<li>
+<p>Намерете броя на символите, различни от буквата ‘а’ във файла /etc/passwd</p>
+<pre><code>  cat /etc/passwd | tr -d 'a' | wc -m  - counting new lines too 
+  cat file2 | tr -d 'A' | sed -e ':a;N;$!ba;s/\n//g' | wc -m    - without new lines
+</code></pre>
+</li>
+</ul>
+<h3 id="b-5300">29. 03-b-5300</h3>
+<ul>
+<li>
+<p>Намерете броя на уникалните символи, използвани в имената на потребителите от</p>
+<pre><code>  cat /etc/passwd | awk -F ":" '{print $5}' | awk -F "," '{print $1}' | sed -e 's/\(.\)/\1\n/g' | sort | uniq -c | grep -o "1 .$" | wc -l
+</code></pre>
+</li>
+</ul>
+<h3 id="b-5400">30. 03-b-5400</h3>
+<ul>
+<li>
+<p>Отпечатайте всички редове на файла /etc/passwd, които не съдържат символния низ ‘ов’.</p>
+<pre><code>  cat /etc/passwd | egrep -v '.*ов.*'
+</code></pre>
+</li>
+</ul>
+<h3 id="b-6100">31. 03-b-6100</h3>
+<ul>
+<li>
+<p>Отпечатайте последната цифра на UID на всички редове между 28-ми и 46-ред в /etc/passwd.</p>
+<pre><code>  cat /etc/passwd | head -n 46 | tail -n 19 | awk -F ":" '{print $3}' | grep -o '[0-9]$'
+</code></pre>
+</li>
+</ul>
+<h3 id="b-6700">32. 03-b-6700</h3>
+<ul>
+<li>
+<p>Отпечатайте правата (permissions) и имената на всички файлове, до които имате<br>
+read достъп, намиращи се в директорията /tmp. (hint: ‘man find’, вижте -readable)</p>
+<pre><code>  find /tmp/ -readable | xargs stat -c "%a %n"
+</code></pre>
+</li>
+</ul>
+<h3 id="b-6900">33. 03-b-6900</h3>
+<ul>
+<li>
+<p>Намерете имената на 10-те файла във вашата home директория, чието съдържание е редактирано най-скоро. На първо място трябва да бъде най-скоро редактираният файл. Намерете 10-те най-скоро достъпени файлове. (hint: Unix time)</p>
+<pre><code>  find . -type f | xargs stat -c "%Y %y %n" | sort -n -k 1,1 | tail -n 10 - last modification
+  find . -type f | xargs stat -c "%X %x %n" | sort -n -k 1,1 | tail -n 10 - last access
+</code></pre>
+</li>
+</ul>
+<h3 id="b-7000">34. 03-b-7000</h3>
+<ul>
+<li>
+<p>Да приемем, че файловете, които съдържат C код, завършват на <code>.c</code> или <code>.h</code>. Колко на брой са те в директорията <code>/usr/include</code>? Колко реда C код има в тези файлове?</p>
+<pre><code>  find /usr/include -type f \( -name \*.h -o -name \*.c \)  |  wc -l  - number of C files in /usr/include
+  -   `-type f`  - only search for files (not directories)
+  -   `\(`  &amp;  `\)`  - are needed for the  `-type f`  to apply to all arguments
+  -   `-o`  - logical OR operator
+  -   `-iname`  - like  `-name`, but the match is case insensitive
+  find /usr/include -type f \( -name \*.h -o -name \*.c \) -exec grep '*' {} + | wc -l  - all lines of code in these files
+  find /usr/include -type f \( -name \*.h -o -name \*.c \) -exec cat {} + | wc -l  ??? questionable
+</code></pre>
+</li>
+</ul>
+<h3 id="b-7500">35. 03-b-7500</h3>
+<ul>
+<li>
+<p>Даден ви е ASCII текстов файл - /etc/services. Отпечатайте хистограма на 10-те най-често срещани думи. Дума наричаме непразна последователност от букви. Не правим разлика между главни и малки букви. Хистограма наричаме поредица от редове, всеки от които има вида:<br>
+&lt;брой срещания&gt; &lt;какво се среща толкова пъти&gt;</p>
+<pre><code>  egrep -o "[a-zA-Z0-9_]+" /etc/services | tr 'A-Z' 'a-z' | sort | uniq -c | sort -nk 1,1 | tail
+  egrep -o "[a-zA-Z0-9_]+" /etc/services | sort | uniq -ci | sort -nk 1,1 | tail  - this way we escape tr and use the built in -i in uniq
+</code></pre>
+</li>
+</ul>
+<h3 id="b-8000">36. 03-b-8000</h3>
+<ul>
+<li>
+<p>Вземете факултетните номера на студентите (описани във файла &lt;РЕПО&gt;/exercises/data/mypasswd.txt) от СИ и ги запишете във файл si.txt сортирани. Студент е част от СИ, ако home директорията на този потребител (според &lt;РЕПО&gt;/exercises/data/mypasswd.txt) се намира в /home/SI директорията.</p>
+<pre><code>   grep "/home/SI" /srv/fmi-os/exercises/data/mypasswd.txt | cut -d ":" -f 1 | wc -l
+</code></pre>
+</li>
+</ul>
+<h3 id="b-8500">37.  03-b-8500</h3>
+<ul>
+<li>
+<p>За всяка група от /etc/group изпишете “Hello, &lt;група&gt;”, като ако това е вашата група, напишете “Hello, &lt;група&gt; - I am here!”.</p>
+<pre><code>  PROCINFO["gid"]
+  cat /etc/group | awk -F ":" '$1 == "students" {print "Hello,",$1,"- I am here!"} {print "Hello,",$1}'   
+  cat /etc/group | awk -F ":" '{if ($1 == PROCINFO["gid"]) print "Hello,",$1,"- I am here!"; else print "Hello,",$1;}'  - with if else statement
+  cat /etc/group | awk -F ":" '$3 == PROCINFO["gid"] {print "Hello,",$1,"- I am here!"} $3 != PROCINFO["gid"]{print "Hello,",$1}'
+</code></pre>
+</li>
+<li>
+<p>built in PROCINFO[…] keeps track of users groupid, userid and so on. Read man awk</p>
+</li>
+</ul>
+<h3 id="b-8600">38. 03-b-8600</h3>
+<ul>
+<li>
+<p>Shell Script-овете са файлове, които по конвенция имат разширение .sh. Всеки такъв файл започва с “#!” , където  указва на операционната система какъв интерпретатор да пусне (пр: “#!/bin/bash”, “#!/usr/bin/python3 -u”). Намерете всички .sh файлове в директорията <code>/usr</code> и нейните поддиректории, и проверете кой е най-често използваният интерпретатор.</p>
+<pre><code>  find /usr -type f -readable -name "*.sh" -exec grep -h -m 1 "^#!" {} + | cut -d "!" -f 2 | cut -d " " -f 2 | sort | uniq -c | sort -n -k 1,1 | tail -n 1
+</code></pre>
+</li>
+</ul>
+<h3 id="b-8700">39. 03-b-8700</h3>
+<ol>
+<li>
+<p>Изведете GID-овете на 5-те най-големи групи спрямо броя потребители, за които съответната група е основна (primary).</p>
+<pre><code> cat /etc/passwd | cut -d ":" -f 4 | sort -n | uniq -c | sort -k 1,1 | tail -n 5
+</code></pre>
+</li>
+<li>
+<p>(*) Изведете имената на съответните групи. Hint: /etc/passwd</p>
+<pre><code> cat /etc/passwd | cut -d ":" -f 4 | sort -n | uniq -c | sort -k 1,1 | tail -n 5 | cut -f 2| awk '{my_cmd="getent group " $2 " | cut -d \":\" -f 1 2&gt;/dev/null &gt;&amp;1"; cmd_out=system(my_cmd) ; print cmd_out,$0}'
+</code></pre>
+</li>
+</ol>
+<h3 id="b-9000">40. 03-b-9000</h3>
+<ul>
+<li>
+<p>Направете файл eternity. Намерете всички файлове, намиращи се във вашата home директория и нейните поддиректории, които са били модифицирани в последните 15мин (по възможност изключете .). Запишете във eternity името (път) на файла и времето (unix time) на последната промяна.</p>
+<pre><code>  find ~/ -mmin -15 | xargs stat -c "%n %Y" | sort -n -k 2,2 | tail -n 1  &gt; ~/eternity
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9050">41. 03-b-9050</h3>
+<ul>
+<li>
+<p>Копирайте файл &lt;РЕПО&gt;/exercises/data/population.csv във вашата home директория.</p>
+<pre><code>  cp /srv/fmi-os/exercises/data/population.csv ~/
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9051">42. 03-b-9051</h3>
+<ul>
+<li>
+<p>Използвайки файл population.csv, намерете колко е общото население на света през 2008 година. А през 2016?</p>
+<pre><code>  cat population.csv | sed -e 's/"\(.*\),\(.*\)",\(.*\),\(.*\),\(.*\)/"\1-\2",\3,\4,\5/' | awk -F "," '$3 == 2008 {sum += $4} END {printf "Total population: %20.0f\n",sum}'
+  cat population.csv | sed -e 's/"\(.*\),\(.*\)",\(.*\),\(.*\),\(.*\)/"\1-\2",\3,\4,\5/' | awk -F "," '$3 == 2016 {sum += $4} END {printf "Total population: %20.0f\n",sum}'
+  cat population.csv | rev | cut -d "," -f 1,2 | rev | awk -F "," '$1 == 2008 {sum+=$2} END {print "Total:",sum}'
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9052">43.  03-b-9052</h3>
+<ul>
+<li>
+<p>Използвайки файл population.csv, намерете през коя година в България има най-много население.</p>
+<pre><code>  cat population.csv | sed -e 's/"\(.*\),\(.*\)",\(.*\),\(.*\),\(.*\)/"\1-\2",\3,\4,\5/' | awk -F "," '$1 == "Bulgaria" &amp;&amp; $4 &gt; max {max=$4;year=$3} END {print "Max population is",max,"reached during",year }'
+  cat population.csv | awk -F "," '$1 == "Bulgaria" &amp;&amp; $4 &gt; max {max=$4;year=$3} END {print "Max population is",max,"reached during",year }'     - this solution doesnt format the file for the countries that have ',' in their names
+  cat population.csv | egrep 'Bulgaria' | awk -F "," '$4 &gt; max {max=$4;year=$3} END {print "Max population is",max,"reached during",year }'
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9053">44. 03-b-9053</h3>
+<ul>
+<li>
+<p>Използвайки файл population.csv, намерете коя държава има най-много население през 2016. А коя е с най-малко население? (Hint: Погледнете имената на държавите)</p>
+<pre><code>  cat population.csv | sed -e 's/"\(.*\),\(.*\)",\(.*\),\(.*\),\(.*\)/"\1-\2",\3,\4,\5/' | sort -n -t "," -k 4,4 | awk -F "," '$3 == 2016 {print "Most population in 2016 is",$4,"in",$1}' | tail -n 1   - max population in 2016
+  cat population.csv | sed -e 's/"\(.*\),\(.*\)",\(.*\),\(.*\),\(.*\)/"\1-\2",\3,\4,\5/' | sort -n -t "," -k 4,4 | awk -F "," '$3 == 2016 {print "Most population in 2016 is",$4,"in",$1}' | head -n 1 - min population 2016
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9054">45. 03-b-9054</h3>
+<ul>
+<li>
+<p>Използвайки файл population.csv, намерете коя държава е на 42-ро място по население през 1969. Колко е населението й през тази година?</p>
+<pre><code>  cat population.csv | sed -e 's/"\(.*\),\(.*\)",\(.*\),\(.*\),\(.*\)/"\1-\2",\3,\4,\5/' | awk -F "," '$3 == 1969' | sort -n -t "," -k 4,4 | sed -n "42p"     ---&gt; -n suppresses standart output and prints the 42nd line of the input
+  cat population.csv | sed -e 's/"\(.*\),\(.*\)",\(.*\),\(.*\),\(.*\)/"\1-\2",\3,\4,\5/' | awk -F "," '$3 == 1969' | sort -n -t "," -k 4,4 | awk -F "," 'NR == 42 {print $1,$4}'   - other way
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9100">46. 03-b-9100</h3>
+<ul>
+<li>
+<p>В home директорията си изпълнете командата curl -o songs.tar.gz “<a href="http://fangorn.uni-sofia.bg/misc/songs.tar.gz">http://fangorn.uni-sofia.bg/misc/songs.tar.gz</a>”</p>
+<pre><code>  curl -o songs.tar.gz "http://fangorn.uni-sofia.bg/misc/songs.tar.gz"
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9101">47. 03-b-9101</h3>
+<ul>
+<li>
+<p>Да се разархивира архивът songs.tar.gz в директория songs във вашата home директория.</p>
+<pre><code>  tar -xf songs.tar.gz   - x stands for extract, f - for file name
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9102">48.  03-b-9102</h3>
+<ul>
+<li>
+<p>Да се изведат само имената на песните.</p>
+<pre><code>  find . -type f -name "*.ogg" | cut -d "/" -f 2 | awk -F ".ogg" '{print $1}' | cut -d "-" -f 2 | cut -d " " -f 2-
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9103">49. 03-b-9103</h3>
+<ul>
+<li>
+<p>Имената на песните да се направят с малки букви, да се заменят спейсовете с долни черти и да се сортират.</p>
+<pre><code>  find . -type f -name "*.ogg" | cut -d "/" -f 2 | awk -F ".ogg" '{print $1}' | cut -d "-" -f 2 | cut -d " " -f 2- | tr 'A-Z' 'a-z' | tr ' ' '_' | sort
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9104">50. 03-b-9104</h3>
+<ul>
+<li>
+<p>Да се изведат всички албуми, сортирани по година.</p>
+<pre><code>  find . -type f -name "*.ogg" | cut -d "/" -f 2 | awk -F ".ogg" '{print $1}' | cut -d "-" -f 2 | cut -d " " -f 2- | cut -d "(" -f 2 | sed -e 's/)//g'| sort -n -t "," -k 2,2
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9105">51. 03-b-9105</h3>
+<ul>
+<li>
+<p>Да се преброят/изведат само песните на Beatles и Pink.</p>
+<pre><code>  find . -type f -name "*.ogg" | cut -d "/" -f 2 | awk -F ".ogg" '$1 ~ /^Pink .*/ || $1 ~ /^Beatles.*/ {print $1}' 
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9106">52. 03-b-9106</h3>
+<ul>
+<li>
+<p>Да се направят директории с имената на уникалните групи. За улеснение, имената от две думи да се напишат слято: Beatles, PinkFloyd, Madness</p>
+<pre><code>  find ~/tarTest -type f -name "*.ogg"| rev | cut -d "/" -f 1 | rev | awk -F ".ogg" '{print $1}' | awk -F " - " '{print $1}' | tr -d ' ' | sort | uniq | xargs mkdir
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9200">53. 03-b-9200</h3>
+<ul>
+<li>
+<p>Напишете серия от команди, които извеждат детайли за файловете и директориите в текущата директория, които имат същите права за достъп както най-големият файл в /etc директорията.</p>
+<pre><code>  find . -readable -perm $(find /etc -type f -readable -printf "%s %m\n" 2&gt;/dev/null | sort -n -k 1,1 | tail -n 1 | cut -d " " -f 2)
+</code></pre>
+</li>
+</ul>
+<h3 id="b-9300">54. 03-b-9300</h3>
+<ul>
+<li>
+<p>Дадени са ви 2 списъка с email адреси - първият има 12 валидни адреса, а вторията има само невалидни. Филтрирайте всички адреси, така че да останат само валидните. Колко кратък регулярен израз можете да направите за целта? Валидни email адреси (12 на брой):</p>
+<ul>
+<li><a href="mailto:email@example.com">email@example.com</a></li>
+<li><a href="mailto:firstname.lastname@example.com">firstname.lastname@example.com</a></li>
+<li><a href="mailto:email@subdomain.example.com">email@subdomain.example.com</a></li>
+<li><a href="mailto:email@123.123.123.123">email@123.123.123.123</a></li>
+<li><a href="mailto:1234567890@example.com">1234567890@example.com</a></li>
+<li><a href="mailto:email@example-one.com">email@example-one.com</a></li>
+<li><a href="mailto:_______@example.com">_______@example.com</a></li>
+<li><a href="mailto:email@example.name">email@example.name</a></li>
+<li><a href="mailto:email@example.museum">email@example.museum</a></li>
+<li><a href="mailto:email@example.co.jp">email@example.co.jp</a></li>
+<li><a href="mailto:firstname-lastname@example.com">firstname-lastname@example.com</a></li>
+<li><a href="mailto:unusually.long.long.name@example.com">unusually.long.long.name@example.com</a></li>
+</ul>
+</li>
+<li>
+<p>Невалидни email адреси:</p>
+<ul>
+<li>
+<p>#@%^%#$@#$@#.com</p>
+</li>
+<li>
+<p>@example.com</p>
+</li>
+<li>
+<p>myemail</p>
+</li>
+<li>
+<p>Joe Smith <a href="mailto:email@example.com">email@example.com</a></p>
+</li>
+<li>
+<p><a href="http://email.example.com">email.example.com</a></p>
+</li>
+<li>
+<p>email@example@example.com</p>
+</li>
+<li>
+<p><a href="mailto:.email@example.com">.email@example.com</a></p>
+</li>
+<li>
+<p><a href="mailto:email.@example.com">email.@example.com</a></p>
+</li>
+<li>
+<p><a href="mailto:email..email@example.com">email..email@example.com</a></p>
+</li>
+<li>
+<p>email@-example.com</p>
+</li>
+<li>
+<p>email@example…com</p>
+</li>
+<li>
+<p><a href="mailto:Abc..123@example.com">Abc..123@example.com</a></p>
+</li>
+<li>
+<p>(),:;&lt;&gt;[]@example.com</p>
+</li>
+<li>
+<p><a href="mailto:just%22not%22right@example.com">just"not"right@example.com</a></p>
+</li>
+<li>
+<p>this\ is"really"not\allowed@example.com</p>
+<pre><code>  egrep '^((_+)|([a-zA-Z0-9]+(\.[a-zA-Z0-9]|-[a-zA-Z0-9])*)+)@([a-zA-Z0-9]+(\.|-)?[a-zA-Z0-9]+)+$' emails.txt
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="b-9400">55. 03-b-9400</h3>
+<ul>
+<li>Посредством awk, използвайки emp.data (от 03-a-6000.txt) за входнни данни, изведете:
+<ul>
+<li>
+<p>всеки ред, като полетата са в обратен ред (Разгледайте for цикли в awk)</p>
+<pre><code>  awk '{for(i=NF;i&gt;1;i--) printf "%s ",$i;printf "%s",$1;print ""}' myData
+  awk '{for (i=NF;i&gt;0;i--){ res=res $i "\t"} print res;res="" }'  myData
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="b-9500">56. 03-b-9500</h3>
+<p>Копирайте &lt;РЕПО&gt;/exercises/data/ssa-input.txt във вашата home директория.<br>
+Общият вид на файла е:</p>
+<pre><code>- заглавна част:
+
+Smart Array P440ar in Slot 0 (Embedded)
+
+- една или повече секции за масиви:
+
+Array A
+
+Array B
+
+...
+
+като буквата (A, B, ...) е името на масива
+
+- във всяка таква секция има една или повече подсекции за дискове:
+
+physicaldrive 2I:0:5
+
+physicaldrive 2I:0:6
+
+...
+
+като 2I:0:5 е името на диска
+
+- във всяка подсекция за диск има множество параметри във вида:
+
+key name: value
+
+като за нас са интересни само:
+
+Current Temperature (C): 35
+
+Maximum Temperature (C): 36
+
+Напишете поредица от команди която обработва файл в този формат, и генерира
+
+следният изход:
+
+A-2I:0:5 35 36
+
+A-2I:0:6 34 35
+
+B-1I:1:1 35 50
+
+B-1I:1:2 35 49
+
+x-yyyyyy zz ww
+
+където:
+
+- x е името на масива
+
+- yyyyyy е името на диска
+
+- zz е current temperature
+
+- ww е max temperature
+
+answer: egrep '(Array [a-zA-B0-9])|(physicaldrive)|(Current Temperature)|(Maximum Temperature)' myInput.txt | awk '$1 == "Array" {currArr=$2} $1== "physicaldrive" {res="";res=currArr "-" $2 " "} $1 == "Current" {res = res $4 " "} $1 == "Maximum" {res = res $4;print res}'
+</code></pre>
+</div>
+</body>
+
+</html>
